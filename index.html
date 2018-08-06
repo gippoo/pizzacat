@@ -1,82 +1,80 @@
 <!DOCTYPE html>
 <html>
-<head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"> </script>
-<style>
-#canholder {
-    height: 224px;
-    width: 224px;
-}
-</style>
-</head>
+	<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"> </script>
+	<style>
+		#canholder {
+    		height: 224px;
+    		width: 224px;
+		}
+	</style>
+	</head>
 
-<script>
-    async function init() {
-	model = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
-    }
+	<script>
+    		async function init() {
+			model = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
+    		}
 	
-    init();
+    		init();
 	
-    function setup() {
-  	var canv = createCanvas(224, 224);
-  	background(255,255,255);
-        canv.parent("canholder");
-    }
+    		function setup() {
+  			var canv = createCanvas(224, 224);
+  			background(255,255,255);
+        		canv.parent("canholder");
+    		}
     
-    function touchMoved() {
-	strokeWeight(12);
-        line(pmouseX, pmouseY, mouseX, mouseY);
-    }
+    		function touchMoved() {
+			strokeWeight(12);
+        		line(pmouseX, pmouseY, mouseX, mouseY);
+    		}
     
-    function getdata() {
-	tf.tidy(() => {
-    	var idata = [];
-    	var imgData = get();
-        imgData.resize(28,28);
-        imgData.loadPixels();
-        
-        var i;
-        for (i = 0; i < imgData.pixels.length; i+=4) {
-        	idata.push(1-(imgData.pixels[i]/255.0));
-        }
+    		function getdata() {
+			tf.tidy(() => {
+    				var idata = [];
+    				var imgData = get();
+        			imgData.resize(28,28);
+        			imgData.loadPixels();
+
+        			for (let i = 0; i < imgData.pixels.length; i+=4) {
+        				idata.push(1-(imgData.pixels[i]/255.0));
+        			}
 	
-        var inputs = tf.tensor4d(idata,[1,28,28,1]);
+        			var inputs = tf.tensor4d(idata,[1,28,28,1]);
         
-        var prediction = mnist.predict(inputs);
+        			var prediction = mnist.predict(inputs);
 	    
-	var result = Math.round(prediction.dataSync());
+				var result = Math.round(prediction.dataSync());
   
-  if (result == 0) {
-    result = "Cat"
-    } else {
-    result = "Pizza"
-    }
+  				if (result == 0) {
+    					result = "Cat"
+    				} else {
+    					result = "Pizza"
+    				}
 		
-	document.getElementById("result").innerHTML = "Predicted number: " + result;
+				document.getElementById("result").innerHTML = "Predicted number: " + result;
 	    
-	});
+			});
 	    
-	console.log(tf.memory().numTensors);
+			console.log(tf.memory().numTensors);
 		
-    }
+    		}
     
-    function erase() {
-    	background(255,255,255);
-    }
+    		function erase() {
+    			background(255,255,255);
+    		}
         
-</script>
+	</script>
 
-<body>
+	<body>
+		<h1>Make a cat or a pizza</h1>
+		<div id="canholder" style="border:1px solid #000000;">
+		</div>
+		<p>Click 'Predict' to have the computer guess what you drew.</p>
 
-<h1>Make a cat or a pizza</h1>
-<div id="canholder" style="border:1px solid #000000;">
-</div>
-<p>Click 'Predict' to have the computer guess what you drew.</p>
-
-<button id="clr" onclick="erase()">Clear</button>
-<button id="dataget" onclick="getdata()">Predict</button>
-<p id="result"></p>
-<p><b>NOTE: There may be issues with drawing if you are on a mobile device.</b>
-</body>
+		<button id="clr" onclick="erase()">Clear</button>
+		<button id="dataget" onclick="getdata()">Predict</button>
+		<p id="result"></p>
+		<p><b>NOTE: There may be issues with drawing if you are on a mobile device.</b>
+	</body>
 </html>
