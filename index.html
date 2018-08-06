@@ -48,10 +48,10 @@
   
   				if (result == 0) {
     					result = "Cat";
-					prediction = 1-prediction.dataSync();
+					prediction = ((0.5-prediction.dataSync())/0.5*100).toFixed(4);
     				} else {
     					result = "Pizza";
-					prediction = (prediction.dataSync()*100).toFixed(4);
+					prediction = ((prediction.dataSync()-0.5)/0.5*100).toFixed(4);
     				}
 		
 				document.getElementById("result").innerHTML = "You drew a: " + result;
