@@ -52,7 +52,7 @@
 					prediction = 1-prediction.dataSync();
     				} else {
     					result = "Pizza";
-					prediction = prediction.dataSync();
+					prediction = (prediction.dataSync()*100).toFixed(4);
     				}
 		
 				document.getElementById("result").innerHTML = "You drew a: " + result;
