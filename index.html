@@ -48,13 +48,16 @@
 				var result = Math.round(prediction.dataSync());
   
   				if (result == 0) {
-    					result = "Cat"
+    					result = "Cat";
+					prediction = 1-prediction.dataSync();
     				} else {
-    					result = "Pizza"
+    					result = "Pizza";
+					prediction = prediction.dataSync();
     				}
 		
 				document.getElementById("result").innerHTML = "You drew a: " + result;
-	    
+	    			document.getElementById("confidence").innerHTML = "Confidence: " + prediction;
+				
 			});
 	    
 			console.log(tf.memory().numTensors);
@@ -76,6 +79,7 @@
 		<button id="clr" onclick="erase()">Clear</button>
 		<button id="dataget" onclick="getdata()">Predict</button>
 		<p id="result"></p>
+		<p id="confidence"></p>
 		<p><b>NOTE: There may be issues with drawing if you are on a mobile device.</b>
 	</body>
 </html>
