@@ -13,7 +13,7 @@
 
 	<script>
     		async function init() {
-			model = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
+			pizzacat = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
     		}
 	
     		init();
@@ -42,7 +42,7 @@
 	
         			var inputs = tf.tensor4d(idata,[1,28,28,1]);
         
-        			var prediction = mnist.predict(inputs);
+        			var prediction = pizzacat.predict(inputs);
 	    
 				var result = Math.round(prediction.dataSync());
   
@@ -52,7 +52,7 @@
     					result = "Pizza"
     				}
 		
-				document.getElementById("result").innerHTML = "Predicted number: " + result;
+				document.getElementById("result").innerHTML = "You drew a: " + result;
 	    
 			});
 	    
