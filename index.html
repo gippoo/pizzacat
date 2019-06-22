@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html>
-	<head>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"> </script>
-	<style>
-		#canholder {
-    		height: 250px;
-    		width: 250px;
-		}
-	</style>
-	</head>
+<head>
+<title>Gary Ip - Digit Classifier</title>
+<link rel="shortcut icon" href="https://github.com/gippoo/gippoo.github.io/raw/master/favicon.ico" type="image/x-icon">
+<link rel="icon" href="https://github.com/gippoo/gippoo.github.io/raw/master/favicon.ico" type="image/x-icon">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"> </script>
+<style>
+   #canholder {
+	height: 250px;
+	width: 250px;
+	border: 3px solid #96beff;
+   }
+    
+    body {
+    	background-color: #303030;
+    	color: white;
+    	font-family: "Trebuchet MS";
+    }
+</style>
+</head>
 
+<body>
 	<script>
     		async function init() {
 			pizzacat = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
@@ -69,9 +80,8 @@
         
 	</script>
 
-	<body>
 		<h1>Make a cat or a pizza</h1>
-		<div id="canholder" style="border:1px solid #000000;">
+		<div id="canholder">
 		</div>
 		<p>Click 'Predict' to have the computer guess what you drew.</p>
 
