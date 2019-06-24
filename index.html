@@ -7,88 +7,142 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.0"> </script>
 <style>
-   #canholder {
-	height: 250px;
-	width: 250px;
-	border: 3px solid #96beff;
-   }
+    #canholder {
+        height: 250px;
+        width: 250px;
+        border: 6px solid #96beff;
+        cursor: crosshair;
+    }
     
     body {
     	background-color: #303030;
     	color: white;
     	font-family: "Trebuchet MS";
     }
+    
+    a:link {
+        color: white;
+    }
+    a:visited {
+        color: white;
+    }  
+    a:hover {
+        color: #8bb6f9;
+    }
+    
+    a.header:link {
+        color: #bfd8ff;
+    }
+    a.header:visited {
+        color: #bfd8ff;
+    }  
+    a.header:hover {
+        color: #6da6ff;
+    }
+    
+    div.header {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 54px;
+        background-color: #4a70ad;
+    }
+    
+    div.title_text {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        font-size: 24px;
+    }
+    
+    div.content {
+        position: relative;
+        left: 0;
+        top: 54px;
+        right: 0;
+        font-size: 16px;
+    }
 </style>
 </head>
 
 <body>
-	<script>
-    		async function init() {
-			pizzacat = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
-    		}
-	
-    		init();
-	
-    		function setup() {
-  			var canv = createCanvas(250, 250);
-  			background(255,255,255);
-        		canv.parent("canholder");
-    		}
-    
-    		function touchMoved() {
-			strokeWeight(9);
-        		line(pmouseX, pmouseY, mouseX, mouseY);
-    		}
-    
-    		function getdata() {
-			tf.tidy(() => {
-    				var idata = [];
-    				var imgData = get();
-        			imgData.resize(28,28);
-        			imgData.loadPixels();
+<script>
+    async function init() {
+		pizzacat = await tf.loadModel('https://gippoo.github.io/pizzacat/pizzacat.json');
+	}
 
-        			for (let i = 0; i < imgData.pixels.length; i+=4) {
-        				idata.push(1-(imgData.pixels[i]/255.0));
-        			}
-	
-        			var inputs = tf.tensor4d(idata,[1,28,28,1]);
-        
-        			var prediction = pizzacat.predict(inputs);
-	    
-				var result = Math.round(prediction.dataSync());
-  
-  				if (result == 0) {
-    					result = "Cat";
-					prediction = ((0.5-prediction.dataSync())/0.5*100).toFixed(4);
-    				} else {
-    					result = "Pizza";
-					prediction = ((prediction.dataSync()-0.5)/0.5*100).toFixed(4);
-    				}
+	init();
+
+	function setup() {
+  	    var canv = createCanvas(250, 250);
+  	    background(255,255,255);
+		canv.parent("canholder");
+	}
+
+	function touchMoved() {
+	    strokeWeight(9);
+		line(pmouseX, pmouseY, mouseX, mouseY);
+	}
+
+	function getdata() {
+	    tf.tidy(() => {
+			var idata = [];
+			var imgData = get();
+			imgData.resize(28,28);
+			imgData.loadPixels();
+
+			for (let i = 0; i < imgData.pixels.length; i+=4) {
+				idata.push(1-(imgData.pixels[i]/255.0));
+			}
+
+			var inputs = tf.tensor4d(idata,[1,28,28,1]);
+
+			var prediction = pizzacat.predict(inputs);
+
+		    var result = Math.round(prediction.dataSync());
+
+  		    if (result == 0) {
+				result = "Cat";
+				prediction = ((0.5-prediction.dataSync())/0.5*100).toFixed(4);
+			} else {
+			    result = "Pizza";
+				prediction = ((prediction.dataSync()-0.5)/0.5*100).toFixed(4);
+			}
+
+		    document.getElementById("result").innerHTML = "You drew a: " + result;
+			document.getElementById("confidence").innerHTML = "Confidence: " + prediction + " %";
 		
-				document.getElementById("result").innerHTML = "You drew a: " + result;
-	    			document.getElementById("confidence").innerHTML = "Confidence: " + prediction + " %";
-				
-			});
-	    
-			console.log(tf.memory().numTensors);
-		
-    		}
-    
-    		function erase() {
-    			background(255,255,255);
-    		}
-        
-	</script>
+	    });
 
-		<h1>Make a cat or a pizza</h1>
-		<div id="canholder">
-		</div>
-		<p>Click 'Predict' to have the computer guess what you drew.</p>
+	    console.log(tf.memory().numTensors);
+	}
 
-		<button id="clr" onclick="erase()">Clear</button>
-		<button id="dataget" onclick="getdata()">Predict</button>
-		<p id="result"></p>
-		<p id="confidence"></p>
-		<p><b>NOTE: There may be issues with drawing if you are on a mobile device.</b>
-	</body>
+	function erase() {
+		background(255,255,255);
+	}
+
+</script>
+
+<div class="header">
+    <div class="title_text">
+    	<a class="header" href="https://gippoo.github.io/" style="text-decoration:none;">Gary Ip</a> | 
+        <a class="header" href="https://gippoo.github.io/resume/" target="_blank" style="text-decoration:none;">Resume</a> | 
+        <a class="header" href="https://github.com/gippoo" style="text-decoration:none;">GitHub</a>
+    </div>
+</div>
+
+<div class="content">
+	<p style="font-size:24px; margin-top:0; margin-bottom:10px;">Draw a cat or pizza below.</p>
+	<div id="canholder">
+	</div>
+	<p>Click 'Predict' to have the computer guess what you drew.</p>
+
+	<button id="clr" onclick="erase()">Clear</button>
+	<button id="dataget" onclick="getdata()">Predict</button>
+	<p id="result"></p>
+	<p id="confidence"></p>
+	<p><b>NOTE: There may be issues with drawing if you are on a mobile device.</b>
+</div>
+</body>
 </html>
